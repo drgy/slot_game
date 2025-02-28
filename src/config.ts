@@ -1,0 +1,1 @@
+export const SYMBOLS_VISIBLE = 3;
