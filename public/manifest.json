@@ -1,0 +1,49 @@
+{
+	"bundles": [
+		{
+			"name": "main",
+			"assets": [
+				{
+					"alias": "play_disabled",
+					"src": "/PLAY_DISABLED.png"
+				},
+				{
+					"alias": "play",
+					"src": "/PLAY.png"
+				},
+				{
+					"alias": "reel",
+					"src": "/REEL.png"
+				},
+				{
+					"alias": "sym01",
+					"src": "/SYM01.png"
+				},
+				{
+					"alias": "sym02",
+					"src": "/SYM02.png"
+				},
+				{
+					"alias": "sym03",
+					"src": "/SYM03.png"
+				},
+				{
+					"alias": "sym04",
+					"src": "/SYM04.png"
+				},
+				{
+					"alias": "sym05",
+					"src": "/SYM05.png"
+				},
+				{
+					"alias": "sym06",
+					"src": "/SYM06.png"
+				},
+				{
+					"alias": "win",
+					"src": "/WIN_BG.png"
+				}
+			]
+		}
+	]
+}
