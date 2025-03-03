@@ -27,6 +27,7 @@ export class SlotGame extends Application {
 		await SlotGame.instance.init({ resizeTo: target });
 		target.appendChild(SlotGame.instance.canvas);
 
+		globalThis.__PIXI_APP__ = SlotGame.instance;
 
 		// assets loading
 		const manifest: AssetsManifest = await (await fetch(`${import.meta.env.BASE_URL}manifest.json`)).json();
@@ -49,8 +50,7 @@ export class SlotGame extends Application {
 
 
 		// game setup
-		const reel = new Reel();
-		reel.sequence = await get_symbol_sequence();
+		const reel = new Reel(await get_symbol_sequence());
 		SlotGame.instance.stage.addChild(reel);
 	}
 }

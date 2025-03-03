@@ -16,27 +16,27 @@
 					"src": "/REEL.png"
 				},
 				{
-					"alias": "sym1",
+					"alias": "sym0",
 					"src": "/SYM01.png"
 				},
 				{
-					"alias": "sym2",
+					"alias": "sym1",
 					"src": "/SYM02.png"
 				},
 				{
-					"alias": "sym3",
+					"alias": "sym2",
 					"src": "/SYM03.png"
 				},
 				{
-					"alias": "sym4",
+					"alias": "sym3",
 					"src": "/SYM04.png"
 				},
 				{
-					"alias": "sym5",
+					"alias": "sym4",
 					"src": "/SYM05.png"
 				},
 				{
-					"alias": "sym6",
+					"alias": "sym5",
 					"src": "/SYM06.png"
 				},
 				{
