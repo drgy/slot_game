@@ -18,3 +18,11 @@ body {
   height: 100vh;
   overflow: hidden;
 }
+
+#balances {
+  position: absolute;
+  margin: 0.5rem;
+  bottom: 0.5rem;
+  left: 1rem;
+  color: lightgray;
+}

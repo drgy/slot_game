@@ -28,6 +28,23 @@ export class Reel extends Container {
 		this.next_symbol = (SYMBOLS_VISIBLE + 2) % this.sequence.length;
 	}
 
+	public get visible_symbols(): number[] {
+		const result = [];
+		let idx = this.next_symbol;
+
+		for (let i = 0; i < SYMBOLS_VISIBLE; i++) {
+			idx--;
+
+			if (idx < 0) {
+				idx += this.sequence.length;
+			}
+
+			result.push(this.sequence[idx]);
+		}
+
+		return result;
+	}
+
 	// requests stop of the spin, returns true if the request was successful, false if the spin is already stopping
 	public stop(): boolean {
 		if (this.spinning) {
@@ -39,7 +56,7 @@ export class Reel extends Container {
 	}
 
 	// the whole spin logic, with start, stop, and symbol recycling, returns true if the spin was initiated, false if there is already a spin in progress
-	public spin(): boolean {
+	public spin(callback: (result: number[]) => void): boolean {
 		if (this.animating) {
 			return false;
 		}
@@ -50,7 +67,15 @@ export class Reel extends Container {
 		let progress = 0;
 		let stop_target: number;
 
-		const get_next = (): number => this.sequence[this.next_symbol++ % this.sequence.length];
+		const get_next = (): number => {
+			this.next_symbol++;
+
+			if (this.next_symbol >= this.sequence.length) {
+				this.next_symbol -= this.sequence.length;
+			}
+
+			return this.sequence[this.next_symbol];
+		}
 
 		// interpolation functions
 		const back_in = (progress: number, bounce = 1.1): number => progress * progress * progress * ((bounce + 1) * progress - bounce);
@@ -85,6 +110,7 @@ export class Reel extends Container {
 			if (progress >= 1) {
 				Ticker.shared.remove(decelerate);
 				this.animating = false;
+				callback(this.visible_symbols);
 			}
 		}
 
