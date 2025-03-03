@@ -34,6 +34,7 @@ export class SlotGame extends Application {
 		await SlotGame.instance.init({ resizeTo: target });
 		target.appendChild(SlotGame.instance.canvas);
 
+		// @ts-ignore
 		globalThis.__PIXI_APP__ = SlotGame.instance;
 
 		// assets loading
