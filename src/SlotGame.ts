@@ -40,22 +40,18 @@ export class SlotGame extends Application {
 		// assets loading
 		const manifest: AssetsManifest = await (await fetch(`${import.meta.env.BASE_URL}manifest.json`)).json();
 
-		await Assets.init({ basePath: import.meta.env.BASE_URL, manifest });
-
-		await Promise.all(manifest.bundles.map(async (bundle) => {
+		for (const bundle of manifest.bundles) {
 			if (Symbol.iterator in bundle.assets) {
 
 				// little bug in Pixi, setting basePath when loading assets with manifest does not set it on individual assets
 				for (const asset of bundle.assets) {
 					asset.src = `${import.meta.env.BASE_URL}${asset.src}`;
 				}
-
-				return Assets.loadBundle(bundle.name);
 			}
+		};
 
-			return Promise.resolve();
-		}));
-
+		await Assets.init({ basePath: import.meta.env.BASE_URL, manifest });
+		await Assets.loadBundle('main');
 
 		// game setup
 		const balance_text: HTMLHeadElement = document.getElementById('balance')!;
