@@ -2,6 +2,8 @@ import { Application, Assets, AssetsManifest } from 'pixi.js';
 import './style.css';
 import { Reel } from './components/Reel';
 import { get_symbol_sequence } from './api';
+import { SpinButton } from './components/SpinButton';
+import { MAX_SPIN_TIME } from './config';
 
 export class SlotGame extends Application {
 	protected static instance = new SlotGame();
@@ -52,5 +54,24 @@ export class SlotGame extends Application {
 		// game setup
 		const reel = new Reel(await get_symbol_sequence());
 		SlotGame.instance.stage.addChild(reel);
+
+		const spin_button = new SpinButton();
+		spin_button.on('click', () => {
+			const request_stop = () => {
+				if (reel.stop()) {
+					spin_button.active = true;
+				}
+			}
+
+			if (spin_button.active) {
+				if (reel.spin()) {
+					spin_button.active = false;
+					setTimeout(request_stop, MAX_SPIN_TIME * 1000);
+				}
+			} else {
+				request_stop();
+			}
+		});
+		SlotGame.instance.stage.addChild(spin_button);
 	}
 }

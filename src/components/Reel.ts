@@ -12,6 +12,7 @@ export class Reel extends Container {
 	protected sequence: number[] = [];
 
 	protected spinning = false;
+	protected animating = false;
 	protected next_symbol = 0;
 
 	public set symbol_sequence(sequence: number[]) {
@@ -27,14 +28,25 @@ export class Reel extends Container {
 		this.next_symbol = (SYMBOLS_VISIBLE + 2) % this.sequence.length;
 	}
 
-	public stop() {
-		this.spinning = false;
+	// requests stop of the spin, returns true if the request was successful, false if the spin is already stopping
+	public stop(): boolean {
+		if (this.spinning) {
+			this.spinning = false;
+			return true;
+		}
+
+		return false;
 	}
 
-	// the whole spin logic, with start, stop, and symbol recycling
-	public spin() {
-		const threshold = this.symbols[0].getBounds().height * this.symbols.length;
-		const speed = this.symbols[0].getBounds().height * SPIN_SPEED / 1000;
+	// the whole spin logic, with start, stop, and symbol recycling, returns true if the spin was initiated, false if there is already a spin in progress
+	public spin(): boolean {
+		if (this.animating) {
+			return false;
+		}
+
+		this.animating = true;
+		const threshold = this.symbols[0].height * this.symbols.length;
+		const speed = this.symbols[0].height * SPIN_SPEED / 1000;
 		let progress = 0;
 		let stop_target: number;
 
@@ -72,6 +84,7 @@ export class Reel extends Container {
 
 			if (progress >= 1) {
 				Ticker.shared.remove(decelerate);
+				this.animating = false;
 			}
 		}
 
@@ -103,6 +116,7 @@ export class Reel extends Container {
 		}
 
 		Ticker.shared.add(accelerate);
+		return true;
 	}
 
 	constructor(sequence: number[]) {
