@@ -63,19 +63,29 @@ export class SlotGame extends Application {
 		const update_balance = () => balance_text.textContent = `Balance: $${Intl.NumberFormat('en-US', { minimumFractionDigits: 2 }).format(player.balance)}`;
 		const update_win = (win_amount: number) => win_text.textContent = `Win: $${Intl.NumberFormat('en-US', { minimumFractionDigits: 2 }).format(win_amount)}`;
 		const outcome = (symbols: number[]) => {
-			const counts: { [key: number]: number } = {};
+			const counts = new Map<number, number>();
 
 			for (const symbol of symbols) {
-				counts[symbol] = (counts[symbol] || 0) + 1;
+				counts.set(symbol, (counts.get(symbol) || 0) + 1);
+			}
+
+			let max_symbol = 0;
+			let max_count = 0;
+
+			for (const [symbol, count] of counts.entries()) {
+				if (count > max_count) {
+					max_symbol = symbol;
+					max_count = count;
+				}
 			}
 
 			// normally should be returned with bet result
-			const max_count = Math.max(...Object.values(counts));
 			const win_amount = max_count > 1 ? BET_COST * max_count : 0;
 
 			if (win_amount > 0) {
 				player.balance += win_amount;
 				win(win_amount);
+				reel.highlight(max_symbol);
 			}
 
 			update_win(win_amount);
@@ -97,6 +107,7 @@ export class SlotGame extends Application {
 			}
 
 			if (spin_button.active) {
+				reel.hide_highlights();
 				if (reel.spin(outcome)) {
 					spin_button.active = false;
 					setTimeout(request_stop, MAX_SPIN_TIME * 1000);

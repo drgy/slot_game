@@ -1,4 +1,4 @@
-import { Container, NineSliceSprite, Texture, Ticker } from "pixi.js";
+import { Container, NineSliceSprite, Sprite, Texture, Ticker } from "pixi.js";
 import { SlotGame } from "../SlotGame";
 import { ReelSymbol } from "./ReelSymbol";
 import { SPIN_SPEED, SYMBOLS_VISIBLE } from "../config";
@@ -10,6 +10,7 @@ export class Reel extends Container {
 	protected symbols: ReelSymbol[] = [];
 	protected symbols_container = new Container();
 	protected sequence: number[] = [];
+	protected highlight_container = new Container();
 
 	protected spinning = false;
 	protected animating = false;
@@ -43,6 +44,21 @@ export class Reel extends Container {
 		}
 
 		return result;
+	}
+
+	// TODO add some animations for the highlights
+	public hide_highlights() {
+		this.highlight_container.children.forEach(child => child.scale.set(0));
+	}
+
+	public highlight(symbol: number) {
+		const symbols = this.visible_symbols;
+
+		for (let i = 0; i < SYMBOLS_VISIBLE; i++) {
+			if (symbols[i] === symbol) {
+				this.highlight_container.children[i].scale.set(1);
+			}
+		}
 	}
 
 	// requests stop of the spin, returns true if the request was successful, false if the spin is already stopping
@@ -152,6 +168,16 @@ export class Reel extends Container {
 		this.background.anchor.x = 0.5;
 		this.addChild(this.background);
 
+		for (let i = 0; i < SYMBOLS_VISIBLE; i++) {
+			const highlight = new Sprite(Texture.from('win_bg'));
+			highlight.anchor.set(0.5, 1);
+			highlight.y = (i + 1) * highlight.height;
+			highlight.scale.set(0);
+			this.highlight_container.addChild(highlight);
+		}
+
+		this.addChild(this.highlight_container);
+
 		this.addChild(this.symbols_container);
 
 		this.aspect_ratio = this.background.width / this.background.height;
@@ -165,7 +191,9 @@ export class Reel extends Container {
 		this.background.width = this.background.height * this.aspect_ratio;
 
 		if (this.symbols.length) {
-			this.symbols_container.scale.set(this.background.getBounds().height / (this.symbols[0].height * SYMBOLS_VISIBLE));
+			const scale = this.background.getBounds().height / (this.symbols[0].height * SYMBOLS_VISIBLE);
+			this.highlight_container.scale.set(scale);
+			this.symbols_container.scale.set(scale);
 		}
 
 		this.x = SlotGame.width / 2;
